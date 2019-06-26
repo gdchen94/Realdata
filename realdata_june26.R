@@ -162,8 +162,6 @@ for(p in num_sig){
     }
     
     train.y <- as.matrix(train.y)
-    # train.covar <- X_covariate
-    #train.covar <- train.covar[-i,]
     ##Shat- iter mgc and Phat
     #cors.ICVF <-subgraph_search_iter(train.g, (train.y), 'mcor', 'double',0.95)
     cors.ICVF <-subgraph_search(train.g, (train.y), 'mcor', 'double')
@@ -196,18 +194,6 @@ for(p in num_sig){
       
     }
     
-    #train.X <- as.matrix(na.omit(train.X))
-    #test.X <- t(as.matrix(Ai[upper.tri(Ai)]))
-    
-    
-    #train.X <- as.matrix(cbind(na.omit(train.X),train.covar))
-    #test.X <- cbind(t(as.matrix(Ai[upper.tri(Ai)])),t(X_covariate[i,]))
-    
-    #elasnet
-    #fit <-glmnet(train.X,train.y,alpha = 0)
-    #print(fit1)
-    #coef(fit,s=0.01) # extract coefficients at a single value of lambda
-    #predict(fit,newx=test.X,s=c(0.01,0.005)) # make predictions
     
     
     #random forest
@@ -215,21 +201,7 @@ for(p in num_sig){
     fit <- randomForest(x = train.X, y = (train.y), mtry = 100, ntree = 500)
     #predict(fit, newdata = test.X)
     er[i] <- sum((test.y - predict(fit, newdata = test.X))^2)/test.m
-    #trained_classifiers <- lapply(parameters_grid, function(pars)
-    #  randomForest(x = train.X, y = factor(train.y), mtry = pars[1], ntree = pars[2]))
-    
-    #sapply(trained_classifiers, function(rf) {
-    #  Yhat <- predict(rf, newdata = test.X, type = "class")
-    #sum(Yhat != factor(test.y)) / length(test.y)
-    #})
-    #knn
-    #fit <- knnreg(train.X, as.vector(train.y), k=5)
-    #class
-    #fit <- knn3Train(train.X, test.X, factor(train.Y),k=5)
-    #err[i] = as.numeric(max(fit))
-    
-    #er[i] <- sum((test.y - predict(fit, test.X))^2)/test.m
-    #er[i] <- sum((test.y - predict(fit, newx=test.X, s=.1))^2)/test.m
+   
     dcorrs[i] <- dcorr(train.X,train.y,'mcor','double')
     print(er[i])
   }
