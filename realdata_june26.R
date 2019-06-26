@@ -23,107 +23,19 @@ library(glmnet)
 library("ROCR")
 
 
-temp = list.files(pattern="*.csv")
-m= length(temp)
-myfiles.ICVF = lapply(temp, read_csv)
-
-temporder = rep(0,m)
-for(i in 1:m){
-  temporder[i] = unlist(strsplit(temp[[i]],"_"))[1]
-}
-temporder = as.numeric(temporder)
-
-torder = order(temporder)
-which(order(covariate$bblid)!=seq(m))
-which(sort(temporder)!=covariate$bblid)
-
-
-temp = list.files(pattern="*.csv")
-myfiles.SC = lapply(temp, read_csv)
-covariate = covariates_20190220
-ICVF = list()
-adj.ICVF = list()
-p = rep(0,m)
-f = p
-for(i in 1:m){
-  ICVF[[i]] = as.matrix(sapply(myfiles.ICVF[[i]], as.numeric))
-  p[i] = mean(ICVF[[i]])
-}
-d = matrix(rep(0, 2*m),m,2)
-for(i in 1:m){
-  adj.ICVF[[i]] = (ICVF[[i]]>p[i])*1
-  d[i,] = dim(adj.ICVF[[i]])
-}
-for(i in 1:m){
-  f[i]=c(200,200) %in% d[i,]
-}
-Alist.ICVF = adj.ICVF
-Alist.ICVF[[75]] = NULL
-Y = covariate$age#$log_transformed_ari
-temp[75]
-which(covariate$bblid==85083)
-#Y = Y[-13]
-ICVF[[75]] = NULL
-Yorder[torder] = Y
-Yorder = Yorder[-75]
-a[torder]=covariate$bblid
-which(as.numeric(a)!=temporder)
-a[75]
-temp[75]
-
-X_covariate = cbind(covariate$meanRELrms,covariate$sex,covariate$age)
-X_covariate = X_covariate[-75,]
-
-#sc
-SC =list()
-adj.SC = list()
-p = rep(0,m)
-f = p
-for(i in 1:m){
-  SC[[i]] = as.matrix(sapply(myfiles.SC[[i]], as.numeric))
-  p[i] = mean(SC[[i]])
-}
-d = matrix(rep(0, 2*m),m,2)
-for(i in 1:m){
-  adj.SC[[i]] = (SC[[i]]>p[i])*1
-  d[i,] = dim(adj.SC[[i]])
-}
-for(i in 1:m){
-  f[i]=c(200,200) %in% d[i,]
-}
-Alist.SC = adj.SC
-Alist.SC[[75]] = NULL
-
-Shat.ICVF = list()
-Shat.SC = list()
-
-#my split as cv folds
-
-Array.adj.ICVF <- array(0, dim = c(200, 200, 122))
-Array.ICVF <- array(0, dim = c(200, 200, 122))
-for(i in 1:122 ){
-  Array.adj.ICVF[,,i] = Alist.ICVF[[i]]
-  Array.ICVF[,,i] <- ICVF[[i]]
-}
-#10 folds
-holdout <- list()
-for(i in 1:9){
-  holdout[[i]] <- seq(12)+12*(i-1)
-}
-holdout[[10]] <- seq(14)+12*9
 
 
 #ARI
-ARI = covariate$log_transformed_ari
-Yorder[torder] = ARI
-Yorder = Yorder[-75]
-#my split as cv folds
-Array.adj.ICVF <- array(0, dim = c(200, 200, 122))
-Array.ICVF <- array(0, dim = c(200, 200, 122))
-for(i in 1:122 ){
-  Array.adj.ICVF[,,i] = Alist.ICVF[[i]]
-  Array.ICVF[,,i] <- ICVF[[i]]
-}
+# ARI = covariate$log_transformed_ari
+# Yorder[torder] = ARI
+# Yorder = Yorder[-75]
+# #my split as cv folds
+# Array.adj.ICVF <- array(0, dim = c(200, 200, 122))
+# Array.ICVF <- array(0, dim = c(200, 200, 122))
+# for(i in 1:122 ){
+#   Array.adj.ICVF[,,i] = Alist.ICVF[[i]]
+#   Array.ICVF[,,i] <- ICVF[[i]]
+# }
 #10 folds
 holdout <- list()
 for(i in 1:9){
